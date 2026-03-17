@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:xterm/xterm.dart';
 import '../errors/errors.dart';
@@ -77,7 +78,7 @@ class SessionManager {
     Terminal terminal,
   ) {
     process.stdout.listen((data) {
-      terminal.write(String.fromCharCodes(data));
+      terminal.write(utf8.decode(data));
       onMessage?.call({
         'type': 'output',
         'sessionId': sessionId,
@@ -86,7 +87,7 @@ class SessionManager {
     });
 
     process.stderr.listen((data) {
-      terminal.write(String.fromCharCodes(data));
+      terminal.write(utf8.decode(data));
       onMessage?.call({
         'type': 'error',
         'sessionId': sessionId,
