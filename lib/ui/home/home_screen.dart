@@ -108,10 +108,10 @@ class TerminalPane extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: TerminalView(
+          child: BlahTerminalView(
             terminal: terminal,
-            onInput: (input) {
-              // TODO: Wire up input to session manager
+            onOutput: (output) {
+              // Wire up output to session manager if needed
             },
           ),
         ),

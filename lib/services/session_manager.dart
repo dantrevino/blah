@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:libghostty/libghostty.dart';
+import 'package:xterm/xterm.dart';
 import '../errors/errors.dart';
 import '../models/session.dart';
 import 'git_checker.dart';
@@ -38,30 +37,24 @@ class SessionManager {
     required String branchPrefix,
     String? parentBranch,
   }) async {
-    // Validate repo
     await GitChecker.verifyRepo(repoPath);
 
-    // Create git worktree
     final worktreePath = await _createWorktree(
       repoPath: repoPath,
       sessionBranch: '$branchPrefix/$id',
       parentBranch: parentBranch,
     );
 
-    // Spawn agent process
     final process = await _spawnAgent(
       agentType: agentType,
       worktreePath: worktreePath,
       sessionId: id,
     );
 
-    // Create terminal
-    final terminal = Terminal(cols: 120, rows: 40);
+    final terminal = Terminal();
 
-    // Wire up I/O
     _wireProcessIO(id, process, terminal);
 
-    // Write instructions
     if (instructions.isNotEmpty) {
       process.stdin.writeln(instructions);
     }
@@ -84,7 +77,7 @@ class SessionManager {
     Terminal terminal,
   ) {
     process.stdout.listen((data) {
-      terminal.write(Uint8List.fromList(data));
+      terminal.write(String.fromCharCodes(data));
       onMessage?.call({
         'type': 'output',
         'sessionId': sessionId,
@@ -93,7 +86,7 @@ class SessionManager {
     });
 
     process.stderr.listen((data) {
-      terminal.write(Uint8List.fromList(data));
+      terminal.write(String.fromCharCodes(data));
       onMessage?.call({
         'type': 'error',
         'sessionId': sessionId,
@@ -180,7 +173,6 @@ class SessionManager {
     if (session == null) return;
 
     session.process.kill(ProcessSignal.sigterm);
-    session.terminal.dispose();
     _sessions.remove(sessionId);
   }
 

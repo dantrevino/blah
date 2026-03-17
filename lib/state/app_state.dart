@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:libghostty/libghostty.dart';
+import 'package:xterm/xterm.dart';
 import 'package:uuid/uuid.dart';
 import '../models/session.dart';
 import '../models/settings.dart';
@@ -95,7 +95,6 @@ class AppState extends ChangeNotifier {
 
     await _sessionManager.terminateSession(sessionId);
 
-    _terminals[sessionId]?.dispose();
     _terminals.remove(sessionId);
 
     _sessions.removeWhere((s) => s.id == sessionId);
