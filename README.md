@@ -1,17 +1,45 @@
 # blah
 
-A new Flutter project.
+Run multiple coding agent instances (Claude, Codex, OpenCode) in parallel with git worktree isolation.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Multiple parallel agent sessions
+- Git worktree isolation per session
+- libghostty terminal with ligature support
+- Session persistence across restarts
+- Linux, macOS, Windows support
 
-A few resources to get you started if this is your first Flutter project:
+## Prerequisites
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter 3.0+
+- Git
+- Claude CLI, Codex CLI, or OpenCode CLI
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+```bash
+flutter pub get
+flutter run -d linux  # or macos, windows
+```
+
+## Usage
+
+1. Click `+` in sidebar
+2. Select a git repository
+3. Choose coding agent (Claude/Codex/OpenCode)
+4. Enter instructions for the agent
+5. Session starts in isolated worktree
+
+## Architecture
+
+- **libghostty**: Terminal emulation (VT parsing, buffer)
+- **Flutter Text**: GPU-accelerated rendering with ligatures
+- **Dart isolates**: Process management without blocking UI
+- **Provider**: State management
+
+## File Paths
+
+- Sessions: `~/Documents/blah/sessions/`
+- Settings: `~/Documents/blah/settings.json`
+- Worktrees: `<repo>/.blah-worktrees/<session-id>/`
