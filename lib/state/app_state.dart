@@ -5,6 +5,7 @@ import '../models/session.dart';
 import '../models/settings.dart';
 import '../services/session_store.dart';
 import '../services/session_manager.dart';
+import 'settings_state.dart';
 
 class AppState extends ChangeNotifier {
   final List<Session> _sessions = [];
@@ -12,11 +13,13 @@ class AppState extends ChangeNotifier {
   String? _activeSessionId;
   final SessionStore _sessionStore;
   final SessionManager _sessionManager;
-  final Settings _settings;
+  final SettingsState _settingsState;
 
-  AppState(this._sessionStore, this._sessionManager) : _settings = Settings() {
+  AppState(this._sessionStore, this._sessionManager, this._settingsState) {
     _loadSessions();
   }
+
+  Settings get settings => _settingsState.settings;
 
   List<Session> get sessions => List.unmodifiable(_sessions);
   Session? get activeSession => _activeSessionId != null
@@ -25,7 +28,6 @@ class AppState extends ChangeNotifier {
             orElse: () => null,
           )
       : null;
-  Settings get settings => _settings;
 
   Terminal? getTerminal(String sessionId) => _terminals[sessionId];
 
