@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:libghostty/libghostty.dart';
 import 'package:uuid/uuid.dart';
 import '../models/session.dart';
+import '../models/settings.dart';
 import '../services/session_store.dart';
 import '../services/session_manager.dart';
 
@@ -11,8 +12,9 @@ class AppState extends ChangeNotifier {
   String? _activeSessionId;
   final SessionStore _sessionStore;
   final SessionManager _sessionManager;
+  final Settings _settings;
 
-  AppState(this._sessionStore, this._sessionManager) {
+  AppState(this._sessionStore, this._sessionManager) : _settings = Settings() {
     _loadSessions();
   }
 
@@ -23,6 +25,7 @@ class AppState extends ChangeNotifier {
             orElse: () => null,
           )
       : null;
+  Settings get settings => _settings;
 
   Terminal? getTerminal(String sessionId) => _terminals[sessionId];
 
