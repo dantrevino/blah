@@ -22,13 +22,21 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-    - family: JetBrains Mono
+    - family: JetBrainsMono Nerd Font
       fonts:
-        - asset: assets/fonts/JetBrainsMono-Regular.ttf
-        - asset: assets/fonts/JetBrainsMono-Bold.ttf
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Regular.ttf
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/JetBrainsMonoNerdFont-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Bold.ttf
           weight: 700
-    - family: Fira Code
+    - family: FiraCode Nerd Font
       fonts:
-        - asset: assets/fonts/FiraCode-Regular.ttf
-        - asset: assets/fonts/FiraCode-Bold.ttf
+        - asset: assets/fonts/FiraCodeNerdFont-Regular.ttf
+        - asset: assets/fonts/FiraCodeNerdFont-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/FiraCodeNerdFont-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/FiraCodeNerdFont-Bold.ttf
           weight: 700

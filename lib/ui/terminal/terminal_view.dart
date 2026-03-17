@@ -89,7 +89,7 @@ class _TerminalViewState extends State<TerminalView> {
     return SelectableText(
       buffer.toString(),
       style: TextStyle(
-        fontFamily: widget.fontFamily ?? 'JetBrains Mono',
+        fontFamily: widget.fontFamily ?? 'JetBrainsMono Nerd Font',
         fontSize: widget.fontSize ?? 14,
         color: widget.foregroundColor ?? const Color(0xFFF0F0F0),
         fontFeatures: const [

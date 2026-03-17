@@ -158,7 +158,7 @@ class _TerminalSettingsTab extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: settings.fontFamily,
             decoration: const InputDecoration(labelText: 'Font Family'),
-            items: ['JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro']
+            items: ['JetBrainsMono Nerd Font', 'FiraCode Nerd Font']
                 .map((f) => DropdownMenuItem(value: f, child: Text(f)))
                 .toList(),
             onChanged: (value) {

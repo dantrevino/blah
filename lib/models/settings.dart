@@ -106,7 +106,7 @@ class TerminalSettings {
   });
 
   factory TerminalSettings.defaults() => TerminalSettings(
-        fontFamily: 'JetBrains Mono',
+        fontFamily: 'JetBrainsMono Nerd Font',
         fontSize: 14,
         lineHeight: 1.4,
         themeName: 'dark',
@@ -127,7 +127,7 @@ class TerminalSettings {
 
   factory TerminalSettings.fromJson(Map<String, dynamic> json) {
     return TerminalSettings(
-      fontFamily: json['fontFamily'] ?? 'JetBrains Mono',
+      fontFamily: json['fontFamily'] ?? 'JetBrainsMono Nerd Font',
       fontSize: (json['fontSize'] as num?)?.toDouble() ?? 14,
       lineHeight: (json['lineHeight'] as num?)?.toDouble() ?? 1.4,
       themeName: json['themeName'] ?? 'dark',
