@@ -2,6 +2,7 @@ enum ErrorCode {
   gitNotFound,
   notAGitRepo,
   worktreeCreationFailed,
+  worktreeRemovalFailed,
   agentNotFound,
   processSpawnFailed,
   invalidRepoPath,
@@ -9,13 +10,13 @@ enum ErrorCode {
   terminalInitFailed,
 }
 
-class BlahError implements Exception {
+class AppError implements Exception {
   final ErrorCode code;
   final String message;
   final String? details;
   final String? recoveryHint;
 
-  BlahError(
+  AppError(
     this.code, {
     required this.message,
     this.details,
@@ -23,5 +24,5 @@ class BlahError implements Exception {
   });
 
   @override
-  String toString() => 'BlahError: $message';
+  String toString() => 'AppError: $message';
 }

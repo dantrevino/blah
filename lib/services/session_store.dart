@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import '../config/branding.dart';
 import '../models/session.dart';
 
 class SessionStore {
   Future<String> get _sessionsDir async {
     final appDir = await getApplicationDocumentsDirectory();
-    return '${appDir.path}/blah/sessions';
+    return '${appDir.path}/${Branding.documentsFolder}/sessions';
   }
 
   Future<void> save(Session session) async {

@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_pty/flutter_pty.dart';
 import 'package:xterm/xterm.dart';
+import '../config/branding.dart';
 import '../errors/errors.dart';
 import '../models/session.dart';
 import 'git_checker.dart';
 
 class AgentSession {
   final String id;
-  final Process process;
+  final Pty pty;
   final Terminal terminal;
   final String worktreePath;
   final AgentType agentType;
@@ -16,7 +18,7 @@ class AgentSession {
 
   AgentSession({
     required this.id,
-    required this.process,
+    required this.pty,
     required this.terminal,
     required this.worktreePath,
     required this.agentType,
@@ -37,6 +39,8 @@ class SessionManager {
     required String instructions,
     required String branchPrefix,
     String? parentBranch,
+    int rows = 24,
+    int columns = 80,
   }) async {
     await GitChecker.verifyRepo(repoPath);
 
@@ -46,23 +50,28 @@ class SessionManager {
       parentBranch: parentBranch,
     );
 
-    final process = await _spawnAgent(
+    final pty = _spawnAgent(
       agentType: agentType,
       worktreePath: worktreePath,
       sessionId: id,
+      rows: rows,
+      columns: columns,
     );
 
     final terminal = Terminal();
 
-    _wireProcessIO(id, process, terminal);
+    _wirePtyIO(id, pty, terminal);
 
+    // Send initial instructions after a short delay to let the agent start
     if (instructions.isNotEmpty) {
-      process.stdin.writeln(instructions);
+      Future.delayed(const Duration(milliseconds: 500), () {
+        pty.write(const Utf8Encoder().convert('$instructions\n'));
+      });
     }
 
     final session = AgentSession(
       id: id,
-      process: process,
+      pty: pty,
       terminal: terminal,
       worktreePath: worktreePath,
       agentType: agentType,
@@ -72,12 +81,13 @@ class SessionManager {
     return session;
   }
 
-  void _wireProcessIO(
+  void _wirePtyIO(
     String sessionId,
-    Process process,
+    Pty pty,
     Terminal terminal,
   ) {
-    process.stdout.listen((data) {
+    // PTY output -> Terminal display
+    pty.output.listen((data) {
       terminal.write(utf8.decode(data));
       onMessage?.call({
         'type': 'output',
@@ -86,16 +96,8 @@ class SessionManager {
       });
     });
 
-    process.stderr.listen((data) {
-      terminal.write(utf8.decode(data));
-      onMessage?.call({
-        'type': 'error',
-        'sessionId': sessionId,
-        'data': data,
-      });
-    });
-
-    process.exitCode.then((code) {
+    // PTY exit
+    pty.exitCode.then((code) {
       onMessage?.call({
         'type': 'exit',
         'sessionId': sessionId,
@@ -105,33 +107,38 @@ class SessionManager {
     });
   }
 
-  Future<Process> _spawnAgent({
+  Pty _spawnAgent({
     required AgentType agentType,
     required String worktreePath,
     required String sessionId,
-  }) async {
-    final commands = {
-      AgentType.claude: ['claude', '--session-id', sessionId],
-      AgentType.codex: ['codex', '--session-id', sessionId],
-      AgentType.opencode: ['opencode', '--session-id', sessionId],
+    required int rows,
+    required int columns,
+  }) {
+    // Each agent has different CLI invocation:
+    // - Claude: claude --session-id <uuid> (works from cwd)
+    // - Codex: codex (no session flag, uses cwd)
+    // - OpenCode: opencode [project] (project path as positional arg)
+    final (executable, args) = switch (agentType) {
+      AgentType.claude => ('claude', ['--session-id', sessionId]),
+      AgentType.codex => ('codex', <String>[]),
+      AgentType.opencode => ('opencode', [worktreePath]),
     };
 
-    final cmd = commands[agentType]!;
-    final executable = cmd[0];
-    final args = cmd.sublist(1);
-
     try {
-      return await Process.start(
+      return Pty.start(
         executable,
-        args,
+        arguments: args,
         workingDirectory: worktreePath,
         environment: {
+          ...Platform.environment,
           'TERM': 'xterm-256color',
           'COLORTERM': 'truecolor',
         },
+        rows: rows,
+        columns: columns,
       );
     } catch (e) {
-      throw BlahError(
+      throw AppError(
         ErrorCode.processSpawnFailed,
         message: 'Failed to spawn ${agentType.name}',
         details: e.toString(),
@@ -145,7 +152,7 @@ class SessionManager {
     required String sessionBranch,
     String? parentBranch,
   }) async {
-    final worktreesDir = '$repoPath/.blah-worktrees';
+    final worktreesDir = Branding.worktreesPath(repoPath);
     final worktreePath = '$worktreesDir/$sessionBranch';
 
     await Directory(worktreesDir).create(recursive: true);
@@ -159,7 +166,7 @@ class SessionManager {
     );
 
     if (result.exitCode != 0) {
-      throw BlahError(
+      throw AppError(
         ErrorCode.worktreeCreationFailed,
         message: 'Failed to create worktree',
         details: result.stderr.toString(),
@@ -173,7 +180,7 @@ class SessionManager {
     final session = _sessions[sessionId];
     if (session == null) return;
 
-    session.process.kill(ProcessSignal.sigterm);
+    session.pty.kill();
     _sessions.remove(sessionId);
   }
 
@@ -188,7 +195,14 @@ class SessionManager {
   void sendInput(String sessionId, String input) {
     final session = _sessions[sessionId];
     if (session != null) {
-      session.process.stdin.write(input);
+      session.pty.write(const Utf8Encoder().convert(input));
+    }
+  }
+
+  void resizeTerminal(String sessionId, int rows, int columns) {
+    final session = _sessions[sessionId];
+    if (session != null) {
+      session.pty.resize(rows, columns);
     }
   }
 

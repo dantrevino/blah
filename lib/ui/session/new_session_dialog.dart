@@ -4,10 +4,10 @@ import '../../models/session.dart';
 import '../../services/git_checker.dart';
 
 class NewSessionDialog extends StatefulWidget {
-  final void Function({
+  final Future<void> Function({
+    required String name,
     required String repoPath,
     required AgentType agentType,
-    required String instructions,
   }) onCreate;
 
   const NewSessionDialog({
@@ -20,16 +20,16 @@ class NewSessionDialog extends StatefulWidget {
 }
 
 class _NewSessionDialogState extends State<NewSessionDialog> {
+  final _nameController = TextEditingController();
   final _repoController = TextEditingController();
-  final _instructionsController = TextEditingController();
   AgentType _selectedAgent = AgentType.claude;
   bool _loading = false;
   String? _error;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _repoController.dispose();
-    _instructionsController.dispose();
     super.dispose();
   }
 
@@ -42,8 +42,8 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
   }
 
   Future<void> _createSession() async {
+    final name = _nameController.text.trim();
     final repoPath = _repoController.text.trim();
-    final instructions = _instructionsController.text.trim();
 
     if (repoPath.isEmpty) {
       setState(() => _error = 'Please select a repository');
@@ -58,14 +58,15 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
     try {
       await GitChecker.verifyRepo(repoPath);
 
-      widget.onCreate(
+      await widget.onCreate(
+        name: name,
         repoPath: repoPath,
         agentType: _selectedAgent,
-        instructions: instructions,
       );
 
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.toString();
         _loading = false;
@@ -83,6 +84,14 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Session Name',
+                hintText: 'e.g. Fix auth regression',
+              ),
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -105,7 +114,7 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<AgentType>(
-              value: _selectedAgent,
+              initialValue: _selectedAgent,
               decoration: const InputDecoration(labelText: 'Coding Agent'),
               items: AgentType.values.map((type) {
                 return DropdownMenuItem(
@@ -118,16 +127,6 @@ class _NewSessionDialogState extends State<NewSessionDialog> {
                   setState(() => _selectedAgent = value);
                 }
               },
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _instructionsController,
-              decoration: const InputDecoration(
-                labelText: 'Instructions',
-                hintText: 'What should the agent do?',
-                alignLabelWithHint: true,
-              ),
-              maxLines: 4,
             ),
             const SizedBox(height: 16),
             if (_error != null)

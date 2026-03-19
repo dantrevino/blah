@@ -42,14 +42,35 @@ static void my_application_activate(GApplication* application) {
     }
   }
 #endif
+  // Set window icon from bundled SVG
+  GError* icon_error = nullptr;
+  GdkPixbuf* icon = gdk_pixbuf_new_from_file_at_size(
+      "data/flutter_assets/assets/icons/app_icon.svg", 24, 24, &icon_error);
+  if (icon != nullptr) {
+    gtk_window_set_icon(window, icon);
+    g_object_unref(icon);
+  }
+
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "blah");
+    
+    // Add icon to header bar
+    GError* hb_icon_error = nullptr;
+    GdkPixbuf* hb_icon = gdk_pixbuf_new_from_file_at_size(
+        "data/flutter_assets/assets/icons/app_icon.svg", 20, 20, &hb_icon_error);
+    if (hb_icon != nullptr) {
+      GtkWidget* icon_image = gtk_image_new_from_pixbuf(hb_icon);
+      gtk_widget_show(icon_image);
+      gtk_header_bar_pack_start(header_bar, icon_image);
+      g_object_unref(hb_icon);
+    }
+    
+    gtk_header_bar_set_title(header_bar, "riot.ai");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "blah");
+    gtk_window_set_title(window, "riot.ai");
   }
 
   gtk_window_set_default_size(window, 1280, 720);

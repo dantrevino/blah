@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'config/branding.dart';
 import 'ui/home/home_screen.dart';
 
-class BlahApp extends StatelessWidget {
-  const BlahApp({super.key});
+class RiotApp extends StatelessWidget {
+  const RiotApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'blah',
+      title: Branding.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

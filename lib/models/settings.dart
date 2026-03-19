@@ -46,30 +46,46 @@ class AppSettings {
   final String branchPrefix;
   final bool autoCleanupWorktrees;
   final bool confirmOnClose;
+  final bool debugMode;
 
   AppSettings({
     required this.branchPrefix,
     required this.autoCleanupWorktrees,
     required this.confirmOnClose,
+    required this.debugMode,
   });
 
   factory AppSettings.defaults() => AppSettings(
         branchPrefix: 'agent',
         autoCleanupWorktrees: true,
         confirmOnClose: true,
+        debugMode: false,
       );
 
   Map<String, dynamic> toJson() => {
         'branchPrefix': branchPrefix,
         'autoCleanupWorktrees': autoCleanupWorktrees,
         'confirmOnClose': confirmOnClose,
+        'debugMode': debugMode,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
+    bool parseBool(dynamic value, bool fallback) {
+      if (value is bool) return value;
+      if (value is String) {
+        final normalized = value.toLowerCase();
+        if (normalized == 'true') return true;
+        if (normalized == 'false') return false;
+      }
+      if (value is num) return value != 0;
+      return fallback;
+    }
+
     return AppSettings(
       branchPrefix: json['branchPrefix'] ?? 'agent',
-      autoCleanupWorktrees: json['autoCleanupWorktrees'] ?? true,
-      confirmOnClose: json['confirmOnClose'] ?? true,
+      autoCleanupWorktrees: parseBool(json['autoCleanupWorktrees'], true),
+      confirmOnClose: parseBool(json['confirmOnClose'], true),
+      debugMode: parseBool(json['debugMode'], false),
     );
   }
 
@@ -77,11 +93,13 @@ class AppSettings {
     String? branchPrefix,
     bool? autoCleanupWorktrees,
     bool? confirmOnClose,
+    bool? debugMode,
   }) {
     return AppSettings(
       branchPrefix: branchPrefix ?? this.branchPrefix,
       autoCleanupWorktrees: autoCleanupWorktrees ?? this.autoCleanupWorktrees,
       confirmOnClose: confirmOnClose ?? this.confirmOnClose,
+      debugMode: debugMode ?? this.debugMode,
     );
   }
 }
@@ -126,14 +144,25 @@ class TerminalSettings {
       };
 
   factory TerminalSettings.fromJson(Map<String, dynamic> json) {
+    bool parseBool(dynamic value, bool fallback) {
+      if (value is bool) return value;
+      if (value is String) {
+        final normalized = value.toLowerCase();
+        if (normalized == 'true') return true;
+        if (normalized == 'false') return false;
+      }
+      if (value is num) return value != 0;
+      return fallback;
+    }
+
     return TerminalSettings(
       fontFamily: json['fontFamily'] ?? 'JetBrainsMono Nerd Font',
       fontSize: (json['fontSize'] as num?)?.toDouble() ?? 14,
       lineHeight: (json['lineHeight'] as num?)?.toDouble() ?? 1.4,
       themeName: json['themeName'] ?? 'dark',
-      ligaturesEnabled: json['ligaturesEnabled'] ?? true,
+      ligaturesEnabled: parseBool(json['ligaturesEnabled'], true),
       scrollbackLines: json['scrollbackLines'] ?? 10000,
-      cursorBlink: json['cursorBlink'] ?? true,
+      cursorBlink: parseBool(json['cursorBlink'], true),
     );
   }
 

@@ -6,7 +6,7 @@ class GitChecker {
     final result = await Process.run('git', ['--version']);
 
     if (result.exitCode != 0) {
-      throw BlahError(
+      throw AppError(
         ErrorCode.gitNotFound,
         message: 'Git is not installed or not in PATH',
         recoveryHint: 'Install Git from https://git-scm.com/downloads',
@@ -16,7 +16,7 @@ class GitChecker {
 
   static Future<void> verifyRepo(String path) async {
     if (!await Directory(path).exists()) {
-      throw BlahError(
+      throw AppError(
         ErrorCode.invalidRepoPath,
         message: 'Path does not exist: $path',
       );
@@ -29,7 +29,7 @@ class GitChecker {
     );
 
     if (result.exitCode != 0) {
-      throw BlahError(
+      throw AppError(
         ErrorCode.notAGitRepo,
         message: 'Not a git repository: $path',
         recoveryHint: 'Initialize with: git init',

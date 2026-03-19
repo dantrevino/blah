@@ -1,5 +1,5 @@
-name: blah
-description: Run multiple coding agent instances in parallel with git worktree isolation
+name: riot
+description: Run multiple coding agents in parallel with git worktree isolation
 version: 1.0.0
 
 environment:
@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   provider: ^6.1.0
   xterm: ^4.0.0
+  flutter_pty: ^0.4.2
+  flutter_svg: ^2.0.10
   path_provider: ^2.1.0
   uuid: ^4.0.0
   file_selector: ^1.0.0
@@ -21,6 +23,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/
   fonts:
     - family: JetBrainsMono Nerd Font
       fonts:

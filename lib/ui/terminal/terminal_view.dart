@@ -4,6 +4,7 @@ import 'package:xterm/xterm.dart';
 class BlahTerminalView extends StatefulWidget {
   final Terminal terminal;
   final void Function(String)? onOutput;
+  final void Function(int rows, int columns)? onResize;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final String? fontFamily;
@@ -12,6 +13,7 @@ class BlahTerminalView extends StatefulWidget {
   const BlahTerminalView({
     required this.terminal,
     this.onOutput,
+    this.onResize,
     this.backgroundColor,
     this.foregroundColor,
     this.fontFamily,
@@ -34,6 +36,11 @@ class _BlahTerminalViewState extends State<BlahTerminalView> {
     if (widget.onOutput != null) {
       widget.terminal.onOutput = widget.onOutput;
     }
+
+    // Listen to terminal resize events
+    widget.terminal.onResize = (width, height, pixelWidth, pixelHeight) {
+      widget.onResize?.call(height, width);
+    };
   }
 
   @override
@@ -54,6 +61,7 @@ class _BlahTerminalViewState extends State<BlahTerminalView> {
           fontFamily: widget.fontFamily ?? 'JetBrainsMono Nerd Font',
           fontSize: widget.fontSize ?? 14,
         ),
+        autofocus: true,
       ),
     );
   }

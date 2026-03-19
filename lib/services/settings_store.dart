@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import '../config/branding.dart';
 import '../models/settings.dart';
 
 class SettingsStore {
@@ -8,7 +9,7 @@ class SettingsStore {
 
   Future<String> get _settingsPath async {
     final appDir = await getApplicationDocumentsDirectory();
-    return '${appDir.path}/blah/$_fileName';
+    return '${appDir.path}/${Branding.documentsFolder}/$_fileName';
   }
 
   Future<Settings> load() async {

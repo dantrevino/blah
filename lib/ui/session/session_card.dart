@@ -5,12 +5,14 @@ class SessionCard extends StatelessWidget {
   final Session session;
   final bool isActive;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
   final VoidCallback onClose;
 
   const SessionCard({
     required this.session,
     required this.isActive,
     required this.onTap,
+    required this.onLongPress,
     required this.onClose,
     super.key,
   });
@@ -23,6 +25,7 @@ class SessionCard extends StatelessWidget {
           : Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(

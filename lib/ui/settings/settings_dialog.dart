@@ -133,6 +133,13 @@ class _AppSettingsTab extends StatelessWidget {
             onChanged: (value) =>
                 onChanged(settings.copyWith(confirmOnClose: value)),
           ),
+          SwitchListTile(
+            title: const Text('Debug Mode'),
+            subtitle: const Text('Show exact agent command line in chat'),
+            value: settings.debugMode,
+            onChanged: (value) =>
+                onChanged(settings.copyWith(debugMode: value)),
+          ),
         ],
       ),
     );
