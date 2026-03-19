@@ -34,21 +34,21 @@ class HomeScreen extends StatelessWidget {
     final activeSession = appState.activeSession;
 
     return Shortcuts(
-      shortcuts: <ShortcutActivator, Intent>{
+      shortcuts: const <ShortcutActivator, Intent>{
         // Ctrl+N - New session
-        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
-            const NewSessionIntent(),
+        SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            NewSessionIntent(),
         // Ctrl+` (backtick) - Open terminal
-        const SingleActivator(LogicalKeyboardKey.backquote, control: true):
-            const OpenTerminalIntent(),
+        SingleActivator(LogicalKeyboardKey.backquote, control: true):
+            OpenTerminalIntent(),
         // Ctrl+Shift+` - Alternative for open terminal (common in VS Code)
-        const SingleActivator(LogicalKeyboardKey.backquote,
-            control: true, shift: true): const OpenTerminalIntent(),
+        SingleActivator(LogicalKeyboardKey.backquote,
+            control: true, shift: true): OpenTerminalIntent(),
         // F5 - Refresh
-        const SingleActivator(LogicalKeyboardKey.f5): const RefreshIntent(),
+        SingleActivator(LogicalKeyboardKey.f5): RefreshIntent(),
         // Ctrl+R - Refresh (alternative)
-        const SingleActivator(LogicalKeyboardKey.keyR, control: true):
-            const RefreshIntent(),
+        SingleActivator(LogicalKeyboardKey.keyR, control: true):
+            RefreshIntent(),
       },
       child: Actions(
         actions: <Type, Action<Intent>>{
@@ -256,7 +256,7 @@ class _SessionHeader extends StatelessWidget {
               Branding.appIconPath,
               width: 18,
               height: 18,
-              colorFilter: ColorFilter.mode(
+              colorFilter: const ColorFilter.mode(
                 Branding.primaryColor,
                 BlendMode.srcIn,
               ),

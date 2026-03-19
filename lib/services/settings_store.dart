@@ -34,7 +34,7 @@ class SettingsStore {
 
     await file.parent.create(recursive: true);
     await file.writeAsString(
-      JsonEncoder.withIndent('  ').convert(settings.toJson()),
+      const JsonEncoder.withIndent('  ').convert(settings.toJson()),
     );
   }
 

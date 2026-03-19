@@ -163,7 +163,7 @@ class _TerminalSettingsTab extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           DropdownButtonFormField<String>(
-            value: settings.fontFamily,
+            initialValue: settings.fontFamily,
             decoration: const InputDecoration(labelText: 'Font Family'),
             items: ['JetBrainsMono Nerd Font', 'FiraCode Nerd Font']
                 .map((f) => DropdownMenuItem(value: f, child: Text(f)))
@@ -192,7 +192,7 @@ class _TerminalSettingsTab extends StatelessWidget {
               const SizedBox(width: 16),
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: settings.themeName,
+                  initialValue: settings.themeName,
                   decoration: const InputDecoration(labelText: 'Theme'),
                   items: ['dark', 'light', 'dracula']
                       .map((t) => DropdownMenuItem(value: t, child: Text(t)))

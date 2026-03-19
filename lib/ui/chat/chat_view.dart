@@ -269,7 +269,7 @@ class _Avatar extends StatelessWidget {
         Branding.appIconPath,
         width: 18,
         height: 18,
-        colorFilter: ColorFilter.mode(
+        colorFilter: const ColorFilter.mode(
           Branding.primaryColor,
           BlendMode.srcIn,
         ),
@@ -485,7 +485,7 @@ class _StreamingDotsState extends State<_StreamingDots>
                 child: Container(
                   width: 6,
                   height: 6,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Branding.primaryColor,
                     shape: BoxShape.circle,
                   ),
@@ -546,7 +546,7 @@ class _ChatInput extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border(
+                border: const Border(
                   left: BorderSide(
                     color: Branding.primaryColor,
                     width: 3,
@@ -568,8 +568,8 @@ class _ChatInput extends StatelessWidget {
                         'Type a message... (Enter to send, Shift+Enter for newline)',
                     filled: true,
                     fillColor: theme.colorScheme.surfaceContainerHighest,
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.only(
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8),
                       ),
