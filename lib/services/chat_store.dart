@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../config/branding.dart';
 import '../models/chat.dart';
+import 'ops/storage_path_resolver.dart';
 
 /// Persists chat sessions (message history) to disk.
 ///
@@ -11,7 +12,14 @@ import '../models/chat.dart';
 class ChatStore {
   Future<String> get _sessionsDir async {
     final appDir = await getApplicationDocumentsDirectory();
-    return '${appDir.path}/${Branding.documentsFolder}/sessions';
+    final root = resolveAppDataRoot(
+      isLinux: Platform.isLinux,
+      homePath: Platform.environment['HOME'],
+      xdgDataHome: Platform.environment['XDG_DATA_HOME'],
+      documentsPath: appDir.path,
+      appFolderName: Branding.documentsFolder,
+    );
+    return '$root/sessions';
   }
 
   /// Save a chat session to disk

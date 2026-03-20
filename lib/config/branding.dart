@@ -29,8 +29,9 @@ class Branding {
   /// Organization/company name
   static const String organization = 'riot.ai';
 
-  /// Directory name for storing app data in user's Documents folder
-  /// e.g., ~/Documents/riot/sessions/
+  /// App data directory name on non-Linux platforms.
+  /// Linux uses XDG data paths: $XDG_DATA_HOME/riot
+  /// (or ~/.local/share/riot when XDG_DATA_HOME is unset).
   static const String documentsFolder = 'riot';
 
   /// Directory name for git worktrees inside repos
@@ -43,11 +44,11 @@ class Branding {
   /// Window title format - use {name} for app name
   static String get windowTitle => appName;
 
-  /// Full path helper for documents storage
+  /// Full path helper for non-Linux documents storage
   static String documentsPath(String homeDir) =>
       '$homeDir/Documents/$documentsFolder';
 
-  /// Full path helper for sessions storage
+  /// Full path helper for non-Linux sessions storage
   static String sessionsPath(String homeDir) =>
       '${documentsPath(homeDir)}/sessions';
 

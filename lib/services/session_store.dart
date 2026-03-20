@@ -3,11 +3,19 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../config/branding.dart';
 import '../models/session.dart';
+import 'ops/storage_path_resolver.dart';
 
 class SessionStore {
   Future<String> get _sessionsDir async {
     final appDir = await getApplicationDocumentsDirectory();
-    return '${appDir.path}/${Branding.documentsFolder}/sessions';
+    final root = resolveAppDataRoot(
+      isLinux: Platform.isLinux,
+      homePath: Platform.environment['HOME'],
+      xdgDataHome: Platform.environment['XDG_DATA_HOME'],
+      documentsPath: appDir.path,
+      appFolderName: Branding.documentsFolder,
+    );
+    return '$root/sessions';
   }
 
   Future<void> save(Session session) async {

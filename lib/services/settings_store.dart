@@ -3,13 +3,21 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../config/branding.dart';
 import '../models/settings.dart';
+import 'ops/storage_path_resolver.dart';
 
 class SettingsStore {
   static const String _fileName = 'settings.json';
 
   Future<String> get _settingsPath async {
     final appDir = await getApplicationDocumentsDirectory();
-    return '${appDir.path}/${Branding.documentsFolder}/$_fileName';
+    final root = resolveAppDataRoot(
+      isLinux: Platform.isLinux,
+      homePath: Platform.environment['HOME'],
+      xdgDataHome: Platform.environment['XDG_DATA_HOME'],
+      documentsPath: appDir.path,
+      appFolderName: Branding.documentsFolder,
+    );
+    return '$root/$_fileName';
   }
 
   Future<Settings> load() async {
